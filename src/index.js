@@ -1,4 +1,4 @@
-import {createElement, Component} from 'rax';
+import { createElement, Component } from 'rax';
 import Canvas from 'rax-canvas';
 import StyleSheet from 'universal-stylesheet';
 
@@ -7,15 +7,15 @@ import barCodes from './barcodes';
 class BarCode extends Component {
   constructor(props) {
     super(props);
-    const {style = {}} = props;
-    const {width = 500, height = 200} = style;
+    const { style = {} } = props;
+    const { width = 500, height = 200 } = style;
     this.width = width;
     this.height = height;
     this.canvas = null;
   }
 
   componentDidMount() {
-    const {type = 'CODE128', data = '', options = {}} = this.props;
+    const { type = 'CODE128', data = '', options = {} } = this.props;
     if (data === '') {
       return;
     }
@@ -23,7 +23,7 @@ class BarCode extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {type = 'CODE128', data = '', options = {}} = nextProps;
+    const { type = 'CODE128', data = '', options = {} } = nextProps;
     if (data !== this.props.data || type !== this.props.type) {
       this.drawCode(type, data, options);
     }
@@ -40,25 +40,23 @@ class BarCode extends Component {
 
     const Encoder = barCodes[type];
     const barCodeData = new Encoder(data, options);
-    const {fillColor = '#000000', barWidth = 2} = options;
-    this.canvas.getContext()
-      .then((ctx) => {
-        const binary = barCodeData.encode().data;
-        ctx.clearRect(0, 0, this.width, this.height);
-        ctx.fillStyle = fillColor;
-        for (let i = 0; i < binary.length; i++) {
-          const x = i * barWidth;
-          if (binary[i] === '1') {
-            ctx.fillRect(x, 0, barWidth, this.height);
-          } else if (binary[i]) {
-            ctx.fillRect(x, 0, barWidth, this.height * binary[i]);
-          }
-        }
-      });
+    const { fillColor = '#000000', barWidth = 2 } = options;
+    const ctx = this.canvas.getContext();
+    const binary = barCodeData.encode().data;
+    ctx.clearRect(0, 0, this.width, this.height);
+    ctx.fillStyle = fillColor;
+    for (let i = 0; i < binary.length; i++) {
+      const x = i * barWidth;
+      if (binary[i] === '1') {
+        ctx.fillRect(x, 0, barWidth, this.height);
+      } else if (binary[i]) {
+        ctx.fillRect(x, 0, barWidth, this.height * binary[i]);
+      }
+    }
   }
 
   render() {
-    const {style} = this.props;
+    const { style } = this.props;
     return (
       <Canvas
         style={[styles.barCode, style]}
