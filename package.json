@@ -1,6 +1,6 @@
 {
   "name": "rax-barcode",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "barcode component for Rax.",
   "license": "BSD-3-Clause",
   "main": "lib/index.js",
@@ -12,6 +12,9 @@
     "prepublishOnly": "npm run build",
     "test": "rax-scripts test",
     "lint": "eslint --ext .js --ext .jsx --ext .ts --ext .tsx ./src --fix"
+  },
+  "miniappConfig": {
+    "main": "lib/miniapp/index"
   },
   "files": [
     "dist",
