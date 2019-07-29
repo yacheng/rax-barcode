@@ -12,7 +12,8 @@ class App extends Component {
     return (
       <View style={{flex: 1}}>
 	    <BarCode 
-           data={'123456789'}
+           data={'asdf'}
+           type='CODE39'
            options={{
              fillColor: 'red'
            }}
