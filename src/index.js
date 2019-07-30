@@ -1,4 +1,4 @@
-import { createElement, Component } from 'rax';
+import { createElement, Component,createRef } from 'rax';
 import Canvas from 'rax-canvas';
 import StyleSheet from 'universal-stylesheet';
 
@@ -11,7 +11,7 @@ class BarCode extends Component {
     const { width = 500, height = 200 } = style;
     this.width = width;
     this.height = height;
-    this.canvas = null;
+    this.canvasNode = createRef();
   }
 
   componentDidMount() {
@@ -29,19 +29,11 @@ class BarCode extends Component {
     }
   }
 
-  canvasRef = (ref) => {
-    this.canvas = ref;
-  }
-
   drawCode = (type, data, options) => {
-    if (this.canvas === null) {
-      return;
-    }
-
     const Encoder = barCodes[type];
     const barCodeData = new Encoder(data, options);
     const { fillColor = '#000000', barWidth = 2 } = options;
-    const ctx = this.canvas.getContext();
+    const ctx = this.canvasNode.current.getContext();
     const binary = barCodeData.encode().data;
     ctx.clearRect(0, 0, this.width, this.height);
     ctx.fillStyle = fillColor;
@@ -59,8 +51,8 @@ class BarCode extends Component {
     const { style } = this.props;
     return (
       <Canvas
-        style={[styles.barCode, style]}
-        ref={this.canvasRef}
+        style={{...styles.barCode, ...style}}
+        ref={this.canvasNode}
       />
     );
   }

@@ -1,4 +1,4 @@
-import {createElement, render,Component } from 'rax';
+import { createElement, render, Component } from 'rax';
 import DU from "driver-universal"
 import View from 'rax-view';
 import BarCode from '../src/index';
@@ -10,15 +10,13 @@ class App extends Component {
 
   render() {
     return (
-      <View style={{flex: 1}}>
-	    <BarCode 
-           data={'asdf'}
-           type='CODE39'
-           options={{
-             fillColor: 'red'
-           }}
-        />
-      </View>
+      <BarCode
+        data={'123123123123'}
+        type='CODE39'
+        options={{
+          fillColor: 'green'
+        }}
+      />
     );
   }
 }
