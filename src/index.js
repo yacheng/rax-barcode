@@ -1,4 +1,4 @@
-import { createElement, Component,createRef } from 'rax';
+import { createElement, Component, createRef } from 'rax';
 import Canvas from 'rax-canvas';
 import StyleSheet from 'universal-stylesheet';
 
