@@ -1,5 +1,5 @@
 {
-  "defaultTitle": "小程序Rax view 组件",
+  "defaultTitle": "Rax BarCode Component",
   "usingComponents": {
     "rax-barcode": "../../src/miniapp/index"
   }
