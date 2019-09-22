@@ -1,4 +1,4 @@
-import CODE128 from './CODE128.js';
+import CODE128 from './CODE128';
 
 class CODE128AUTO extends CODE128 {
   constructor(data, options) {
@@ -41,7 +41,9 @@ function autoSelectFromA(string) {
   var untilC = string.match(/^([\x00-\x5F\xC8-\xCF]+?)(([0-9]{2}){2,})([^0-9]|$)/);
 
   if (untilC) {
-    return untilC[1] + String.fromCharCode(204) + autoSelectFromC(string.substring(untilC[1].length));
+    return (
+      untilC[1] + String.fromCharCode(204) + autoSelectFromC(string.substring(untilC[1].length))
+    );
   }
 
   var aChars = string.match(/^[\x00-\x5F\xC8-\xCF]+/);
@@ -56,7 +58,9 @@ function autoSelectFromB(string) {
   var untilC = string.match(/^([\x20-\x7F\xC8-\xCF]+?)(([0-9]{2}){2,})([^0-9]|$)/);
 
   if (untilC) {
-    return untilC[1] + String.fromCharCode(204) + autoSelectFromC(string.substring(untilC[1].length));
+    return (
+      untilC[1] + String.fromCharCode(204) + autoSelectFromC(string.substring(untilC[1].length))
+    );
   }
 
   var bChars = string.match(/^[\x20-\x7F\xC8-\xCF]+/);
@@ -66,7 +70,6 @@ function autoSelectFromB(string) {
 
   return bChars[0] + String.fromCharCode(206) + autoSelectFromA(string.substring(bChars[0].length));
 }
-
 
 function autoSelectFromC(string) {
   var cMatch = string.match(/^(\xCF*[0-9]{2}\xCF*)+/)[0];

@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "gcanvas.js": "^0.0.8",
-    "rax-canvas": "^1.0.1-beta.2",
+    "rax-canvas": "^1.1.0-0",
     "rax-find-dom-node": "^1.0.0"
   },
   "peerDependencies": {

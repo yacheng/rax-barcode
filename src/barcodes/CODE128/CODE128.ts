@@ -1,9 +1,11 @@
 // This is the master class, it does require the start code to be
 // included in the string
 
-import Barcode from '../Barcode.js';
+import Barcode from '../Barcode';
 
 class CODE128 extends Barcode {
+  bytes: number[];
+  encodings: number[];
   constructor(data, options) {
     super(data.substring(1), options);
 
@@ -15,17 +17,114 @@ class CODE128 extends Barcode {
 
     // Data for each character, the last characters will not be encoded but are used for error correction
     // Numbers encode to (n + 1000) -> binary; 740 -> (740 + 1000).toString(2) -> "11011001100"
-    this.encodings = [ // + 1000
-      740, 644, 638, 176, 164, 100, 224, 220, 124, 608, 604,
-      572, 436, 244, 230, 484, 260, 254, 650, 628, 614, 764,
-      652, 902, 868, 836, 830, 892, 844, 842, 752, 734, 590,
-      304, 112, 94, 416, 128, 122, 672, 576, 570, 464, 422,
-      134, 496, 478, 142, 910, 678, 582, 768, 762, 774, 880,
-      862, 814, 896, 890, 818, 914, 602, 930, 328, 292, 200,
-      158, 68, 62, 424, 412, 232, 218, 76, 74, 554, 616,
-      978, 556, 146, 340, 212, 182, 508, 268, 266, 956, 940,
-      938, 758, 782, 974, 400, 310, 118, 512, 506, 960, 954,
-      502, 518, 886, 966, 668, 680, 692,
+    this.encodings = [
+      // + 1000
+      740,
+      644,
+      638,
+      176,
+      164,
+      100,
+      224,
+      220,
+      124,
+      608,
+      604,
+      572,
+      436,
+      244,
+      230,
+      484,
+      260,
+      254,
+      650,
+      628,
+      614,
+      764,
+      652,
+      902,
+      868,
+      836,
+      830,
+      892,
+      844,
+      842,
+      752,
+      734,
+      590,
+      304,
+      112,
+      94,
+      416,
+      128,
+      122,
+      672,
+      576,
+      570,
+      464,
+      422,
+      134,
+      496,
+      478,
+      142,
+      910,
+      678,
+      582,
+      768,
+      762,
+      774,
+      880,
+      862,
+      814,
+      896,
+      890,
+      818,
+      914,
+      602,
+      930,
+      328,
+      292,
+      200,
+      158,
+      68,
+      62,
+      424,
+      412,
+      232,
+      218,
+      76,
+      74,
+      554,
+      616,
+      978,
+      556,
+      146,
+      340,
+      212,
+      182,
+      508,
+      268,
+      266,
+      956,
+      940,
+      938,
+      758,
+      782,
+      974,
+      400,
+      310,
+      118,
+      512,
+      506,
+      960,
+      954,
+      502,
+      518,
+      886,
+      966,
+      668,
+      680,
+      692,
       5379
     ];
   }
@@ -51,14 +150,14 @@ class CODE128 extends Barcode {
     return {
       text: this.text == this.data ? this.text.replace(/[^\x20-\x7E]/g, '') : this.text,
       data:
-      // Add the start bits
-      this.getEncoding(startIndex) +
-      // Add the encoded bits
-      encodingResult.result +
-      // Add the checksum
-      this.getEncoding((encodingResult.checksum + startIndex) % 103) +
-      // Add the end bits
-      this.getEncoding(106)
+        // Add the start bits
+        this.getEncoding(startIndex) +
+        // Add the encoded bits
+        encodingResult.result +
+        // Add the checksum
+        this.getEncoding((encodingResult.checksum + startIndex) % 103) +
+        // Add the end bits
+        this.getEncoding(106)
     };
   }
 
@@ -74,7 +173,7 @@ class CODE128 extends Barcode {
 
   nextA(bytes, depth) {
     if (bytes.length <= 0) {
-      return {'result': '', 'checksum': 0};
+      return { result: '', checksum: 0 };
     }
 
     var next, index;
@@ -117,14 +216,14 @@ class CODE128 extends Barcode {
     var weight = index * depth;
 
     return {
-      'result': enc + next.result,
-      'checksum': weight + next.checksum
+      result: enc + next.result,
+      checksum: weight + next.checksum
     };
   }
 
   nextB(bytes, depth) {
     if (bytes.length <= 0) {
-      return {'result': '', 'checksum': 0};
+      return { result: '', checksum: 0 };
     }
 
     var next, index;
@@ -162,12 +261,12 @@ class CODE128 extends Barcode {
     var enc = this.getEncoding(index);
     var weight = index * depth;
 
-    return {'result': enc + next.result, 'checksum': weight + next.checksum};
+    return { result: enc + next.result, checksum: weight + next.checksum };
   }
 
   nextC(bytes, depth) {
     if (bytes.length <= 0) {
-      return {'result': '', 'checksum': 0};
+      return { result: '', checksum: 0 };
     }
 
     var next, index;
@@ -201,7 +300,7 @@ class CODE128 extends Barcode {
     var enc = this.getEncoding(index);
     var weight = index * depth;
 
-    return {'result': enc + next.result, 'checksum': weight + next.checksum};
+    return { result: enc + next.result, checksum: weight + next.checksum };
   }
 }
 

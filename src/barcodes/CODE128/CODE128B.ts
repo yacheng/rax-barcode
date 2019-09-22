@@ -1,4 +1,4 @@
-import CODE128 from './CODE128.js';
+import CODE128 from './CODE128';
 
 class CODE128B extends CODE128 {
   constructor(string, options) {

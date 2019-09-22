@@ -1,11 +1,15 @@
 // Encoding documentation:
 // https://en.wikipedia.org/wiki/Universal_Product_Code#Encoding
 
-import EANencoder from './ean_encoder.js';
-import Barcode from '../Barcode.js';
+import encode from './encoder';
+import Barcode from '../Barcode';
+import { Options } from '../defaultOptions';
 
 class UPC extends Barcode {
-  constructor(data, options) {
+  public displayValue: boolean;
+  public fontSize: number;
+  public guardHeight: number;
+  public constructor(data: string, options: Options) {
     // Add checksum if it does not exist
     if (data.search(/^[0-9]{11}$/) !== -1) {
       data += checksum(data);
@@ -26,12 +30,13 @@ class UPC extends Barcode {
     this.guardHeight = options.height + this.fontSize / 2 + options.textMargin;
   }
 
-  valid() {
-    return this.data.search(/^[0-9]{12}$/) !== -1 &&
-      this.data[11] == checksum(this.data);
+  public valid() {
+    return (
+      this.data.search(/^[0-9]{12}$/) !== -1 && parseInt(this.data[11], 10) == checksum(this.data)
+    );
   }
 
-  encode() {
+  public encode() {
     if (this.options.flat) {
       return this.flatEncoding();
     } else {
@@ -39,14 +44,13 @@ class UPC extends Barcode {
     }
   }
 
-  flatEncoding() {
-    var encoder = new EANencoder();
+  public flatEncoding() {
     var result = '';
 
     result += '101';
-    result += encoder.encode(this.data.substr(0, 6), 'LLLLLL');
+    result += encode(this.data.substr(0, 6), 'LLLLLL');
     result += '01010';
-    result += encoder.encode(this.data.substr(6, 6), 'RRRRRR');
+    result += encode(this.data.substr(6, 6), 'RRRRRR');
     result += '101';
 
     return {
@@ -55,49 +59,48 @@ class UPC extends Barcode {
     };
   }
 
-  guardedEncoding() {
-    var encoder = new EANencoder();
+  public guardedEncoding() {
     var result = [];
 
-    // Add the first digigt
+    // Add the first digit
     if (this.displayValue) {
       result.push({
         data: '00000000',
         text: this.text.substr(0, 1),
-        options: {textAlign: 'left', fontSize: this.fontSize}
+        options: { textAlign: 'left', fontSize: this.fontSize }
       });
     }
 
     // Add the guard bars
     result.push({
-      data: '101' + encoder.encode(this.data[0], 'L'),
-      options: {height: this.guardHeight}
+      data: '101' + encode(this.data[0], 'L'),
+      options: { height: this.guardHeight }
     });
 
     // Add the left side
     result.push({
-      data: encoder.encode(this.data.substr(1, 5), 'LLLLL'),
+      data: encode(this.data.substr(1, 5), 'LLLLL'),
       text: this.text.substr(1, 5),
-      options: {fontSize: this.fontSize}
+      options: { fontSize: this.fontSize }
     });
 
     // Add the middle bits
     result.push({
       data: '01010',
-      options: {height: this.guardHeight}
+      options: { height: this.guardHeight }
     });
 
     // Add the right side
     result.push({
-      data: encoder.encode(this.data.substr(6, 5), 'RRRRR'),
+      data: encode(this.data.substr(6, 5), 'RRRRR'),
       text: this.text.substr(6, 5),
-      options: {fontSize: this.fontSize}
+      options: { fontSize: this.fontSize }
     });
 
     // Add the end bits
     result.push({
-      data: encoder.encode(this.data[11], 'R') + '101',
-      options: {height: this.guardHeight}
+      data: encode(this.data[11], 'R') + '101',
+      options: { height: this.guardHeight }
     });
 
     // Add the last digit
@@ -105,7 +108,7 @@ class UPC extends Barcode {
       result.push({
         data: '00000000',
         text: this.text.substr(11, 1),
-        options: {textAlign: 'right', fontSize: this.fontSize}
+        options: { textAlign: 'right', fontSize: this.fontSize }
       });
     }
 
@@ -115,7 +118,7 @@ class UPC extends Barcode {
 
 // Calulate the checksum digit
 // https://en.wikipedia.org/wiki/International_Article_Number_(EAN)#Calculation_of_checksum_digit
-function checksum(number) {
+export function checksum(number: string) {
   var result = 0;
 
   var i;
@@ -126,7 +129,7 @@ function checksum(number) {
     result += parseInt(number[i]) * 3;
   }
 
-  return (10 - result % 10) % 10;
+  return (10 - (result % 10)) % 10;
 }
 
 export default UPC;
